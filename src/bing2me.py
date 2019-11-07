@@ -8,27 +8,26 @@ from io import BytesIO
 import win32gui
 import win32con
 import win32api
-
-WEB_SITE = 'https://cn.bing:.com'
-URL_PARAM = "/?scope=web&FORM=HDRSC1"
-CONTENT_STR = "data-ultra-definition-src=\""
-BING_PIC_DIR = os.path.abspath('.') + "/bing-pic/"
+import common
+import database
+import hashlib
 
 
 def getPicUrl(url):
+    print(url)
     r = requests.get(url)
     if not r.ok:
         print(u"ERROR: request %s error %d" % url % r.status_code)
     else:
         bing_content = str(r.content)
-        index_of = bing_content.find(CONTENT_STR)
+        index_of = bing_content.find(common.CONTENT_STR)
         if index_of == -1:
             print(u"ERROR: not found pic url")
         else:
-            index_of += len(CONTENT_STR)
+            index_of += len(common.CONTENT_STR)
             pic_url = bing_content[index_of:]
             pic_url = pic_url[: pic_url.index("&rf")]
-            return WEB_SITE + pic_url
+            return common.WEB_SITE + pic_url
 
 
 def mkdir(dir_path):
@@ -37,14 +36,26 @@ def mkdir(dir_path):
         os.mkdir(dir_path)
 
 
+def filemd5(filename):
+    if os.path.isfile(filename):
+        fp = open(filename, 'rb')
+        contents = fp.read()
+        fp.close()
+        return hashlib.md5(contents).hexdigest()
+    else:
+        return "error md5"
+
+
 def savePic(pic_url):
     r = requests.get(pic_url)
-    pic_path = BING_PIC_DIR + str(time.time()) + ".jpg"
+    filename = str(time.time()) + ".jpg"
+    pic_path = common.BING_PIC_DIR + filename
     if not r.ok:
         print("ERROR: request %s error %d" % pic_url % r.status_code)
     else:
         image = Image.open(BytesIO(r.content))
         image.save(pic_path)
+    database.insert(filename, pic_path, filemd5(pic_path))
     return pic_path
 
 
@@ -57,24 +68,5 @@ def setWallpaper(pic_path):
     win32gui.SystemParametersInfo(win32con.SPI_SETDESKWALLPAPER, pic_path, 1 + 2)
 
 
-def main():
-    # init
-    print(u'init')
-    mkdir(BING_PIC_DIR)
-    # request web site
-    print(u'request web site %s' % WEB_SITE + URL_PARAM)
-    bingPicUrl = getPicUrl(WEB_SITE + URL_PARAM)
-    if bingPicUrl is None:
-        print(u'not found picture file')
-    else:
-        # save picture to disk
-        print(u'save picture to %s' % BING_PIC_DIR)
-        picPath = savePic(bingPicUrl)
-        # setup wallpaper
-        print(u'setting wallpaper...')
-        setWallpaper(picPath)
-        print(u'done')
-
-
-# 程序开始
-main()
+def savePicAndSetWallpaper(pic_url):
+    setWallpaper(savePic(pic_url))
