@@ -22,7 +22,7 @@ BING_PIC_DIR = ABSPATH + "/bing-pic/"
 def get_pic_url(url):
     r = requests.get(url)
     if not r.ok:
-        return print("ERROR: request %s error %d" % url % r.status_code)
+        return print("ERROR: request %s error %d" % (url, r.status_code))
     else:
         bing_content = str(r.content)
         index_of = len(CONTENT_STR) + bing_content.index(CONTENT_STR)
@@ -49,7 +49,7 @@ def save_pic(pic_url):
     r = requests.get(pic_url)
     filename = str(time.time()) + ".jpg"
     if not r.ok:
-        print("ERROR: request %s error %d" % pic_url % r.status_code)
+        print("ERROR: request %s error %d" % (pic_url, r.status_code))
     else:
         image = Image.open(BytesIO(r.content))
         a = image.save(BING_PIC_DIR + filename)

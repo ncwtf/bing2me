@@ -25,3 +25,9 @@
 * pip install requests
 * pip install image
 * pip install pillow
+* pip install pyinstaller
+
+> 问题记录
+* 打包exe时需指定ssl的目录到环境变量
+  * /python-path/DLLs
+* sudo pyinstaller --icon=./src/icons/panda.ico .\src\win32-main.py
