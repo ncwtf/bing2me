@@ -1,4 +1,3 @@
-import os
 import win32api
 import win32con
 import win32gui_struct
@@ -58,6 +57,8 @@ class SysTrayIcon(object):
         window_class.hbrBackground = win32con.COLOR_WINDOW
         window_class.lpfnWndProc = message_map  # 也可以指定wndproc.
         s.classAtom = win32gui.RegisterClass(window_class)
+        # 更换壁纸
+        util.change_wallpaper()
 
     def show_icon(s):
         # 创建窗口。
