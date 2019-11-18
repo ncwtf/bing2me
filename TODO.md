@@ -1,3 +1,5 @@
+### [README.md](https://github.com/ncwtf/bing2me/blob/master/README.md)
+
 - [x] 判断文件md5是否重复，重复则跳过
 - [x] 打包成exe
 - [x] exe的文件保存和读取
