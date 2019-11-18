@@ -98,7 +98,7 @@ def save_ico(name):
     # 如果文件不存在重新获取
     r = requests.get(common.STATIC_NCWTF_COM + name)
     if not r.ok:
-        print(u"ERROR: util.py - 请求icon错误, 错误码: %d" % r.status_code)
+        print(u"ERROR: util.py - 请求icon错误: %s, 错误码: %d" % (common.STATIC_NCWTF_COM + name, r.status_code))
         return False
     else:
         image = Image.open(BytesIO(r.content))

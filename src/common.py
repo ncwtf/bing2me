@@ -10,7 +10,7 @@ ICONS_DIR = os.path.abspath('.') + "/icons/"
 
 
 # ### icon图片 ### #
-STATIC_NCWTF_COM = "https://raw.githubusercontent.com/ncwtf/bing2me/master/src/icons/"
+STATIC_NCWTF_COM = "https://raw.githubusercontent.com/ncwtf/bing2me/master/icons/"
 
 CHECK_MARK_ICO = "checkmark.ico"
 PANDA_ICO = "panda.ico"
