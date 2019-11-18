@@ -89,3 +89,24 @@ def change_wallpaper():
         print(u'INFO: main.py - 设置壁纸...')
         savePicAndSetWallpaper(bingPicUrl)
         print(u'INFO: main.py - done')
+
+
+def save_ico(name):
+    ico_path = common.ICONS_DIR + name
+    if os.path.exists(ico_path):
+        return False
+    # 如果文件不存在重新获取
+    r = requests.get(common.STATIC_NCWTF_COM + name)
+    if not r.ok:
+        print(u"ERROR: util.py - 请求icon错误, 错误码: %d" % r.status_code)
+        return False
+    else:
+        image = Image.open(BytesIO(r.content))
+        image.save(ico_path)
+        print(u"ICO保存成功，%s" % ico_path)
+
+
+def get_icons():
+    mkdir(common.ICONS_DIR)
+    save_ico(common.PANDA_ICO)
+    save_ico(common.CHECK_MARK_ICO)

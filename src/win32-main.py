@@ -5,10 +5,9 @@ import win32gui
 import os
 from tkinter import messagebox as mb
 import util
+import common
 
 Main = None
-CHECK_MARK_ICO_PATH = os.getcwd() + r'\icons\checkmark.ico'
-PANDA_ICO_PATH = os.getcwd() + r'\icons\panda.ico'
 
 
 class SysTrayIcon(object):
@@ -29,9 +28,9 @@ class SysTrayIcon(object):
         s.hover_text = hover_text
         s.on_quit = on_quit
 
-        print(CHECK_MARK_ICO_PATH)
+        print(common.CHECK_MARK_ICO_PATH)
         menu_options += (
-            ('开机启动', CHECK_MARK_ICO_PATH, s.BOOTUP),
+            ('开机启动', common.CHECK_MARK_ICO_PATH, s.BOOTUP),
             ('更换壁纸', None, s.CHANGE_WALLPAPER),
             ('退出', None, s.QUIT),
         )
@@ -213,33 +212,36 @@ class SysTrayIcon(object):
 
 
 class _Main:
-    def main(s):
+    def __init__(self):
+        util.get_icons()
+
+    def main(self):
         import tkinter as tk
 
-        s.root = tk.Tk()
-        print(PANDA_ICO_PATH)
+        self.root = tk.Tk()
+        print(common.PANDA_ICO_PATH)
         hover_text = "bing2me\n每天自动更新壁纸\n(#^.^#)"  # 悬浮于图标上方时的提示
         menu_options = ()
-        s.sysTrayIcon = SysTrayIcon(
-            PANDA_ICO_PATH,
+        self.sysTrayIcon = SysTrayIcon(
+            common.PANDA_ICO_PATH,
             hover_text,
             menu_options,
-            on_quit=s.exit,
+            on_quit=self.exit,
             default_menu_index=1
         )
 
-        s.root.state("iconic")  # 直接设置为窗口隐藏
-        s.root.bind("<Unmap>", lambda event: s.Unmap() if s.root.state() == 'iconic' else False)
-        s.root.protocol('WM_DELETE_WINDOW', s.exit)
-        s.root.resizable(0, 0)
-        s.root.mainloop()
+        self.root.state("iconic")  # 直接设置为窗口隐藏
+        self.root.bind("<Unmap>", lambda event: self.Unmap() if self.root.state() == 'iconic' else False)
+        self.root.protocol('WM_DELETE_WINDOW', self.exit)
+        self.root.resizable(0, 0)
+        self.root.mainloop()
 
-    def Unmap(s):
-        s.root.withdraw()
-        s.sysTrayIcon.show_icon()
+    def Unmap(self):
+        self.root.withdraw()
+        self.sysTrayIcon.show_icon()
 
-    def exit(s, _sysTrayIcon=None):
-        s.root.destroy()
+    def exit(self, _sysTrayIcon=None):
+        self.root.destroy()
         print('exit...')
 
 
