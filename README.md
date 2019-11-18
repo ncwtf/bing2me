@@ -9,12 +9,14 @@
 │  README.md
 │  TODO.md
 ├─bing-pic
+├─icons
 ├─src
 │  │  bing2me.py
 │  │  common.py
 │  │  database.py
 │  │  main.py
 │  │  util.py
+│  │  win32-main.py
 └─test
       request.py
 ```
@@ -30,4 +32,4 @@
 > 问题记录
 * 打包exe时需指定ssl的目录到环境变量
   * /python-path/DLLs
-* sudo pyinstaller --icon=./src/icons/panda.ico .\src\win32-main.py
+* sudo pyinstaller --icon=./icons/panda.ico .\src\win32-main.py
