@@ -200,7 +200,12 @@ class SysTrayIcon(object):
             win32gui.DestroyWindow(self.hwnd)
         elif menu_action == self.BOOTUP:
             # todo 设置开机自启逻辑
-            mb.showwarning("warning", "done")
+            # TODO 获取当前开机自启状态
+            bootup_status = True
+            mb.askquestion(
+                "设置开机启动",
+                "当前 [%s] 开机启动, 是否变更状态?" % "已设置" if bootup_status else "未设置",
+            )
         elif menu_action == self.CHANGE_WALLPAPER:
             # 更换壁纸
             util.change_wallpaper()
@@ -212,7 +217,7 @@ class SysTrayIcon(object):
 class _Main:
     def __init__(self):
         util.get_icons()
-        # 更换壁纸
+        # 更换壁纸 TODO
         # util.change_wallpaper()
         pass
 

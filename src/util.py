@@ -15,10 +15,10 @@ import common
 import bing2me
 
 
-def mkdir(dir_path):
+def makedirs(dir_path):
     if not os.path.exists(dir_path):
         print(u"INFO: util.py - mkdir %s" % (dir_path))
-        os.mkdir(dir_path)
+        os.makedirs(dir_path)
 
 
 def md5(contents):
@@ -76,7 +76,7 @@ def change_wallpaper():
     # init
     print(u'INFO: main.py - 初始化数据库、图片文件夹')
     database.init()
-    mkdir(common.BING_PIC_DIR)
+    makedirs(common.BING_PIC_DIR)
     # request web site
     print(u'INFO: main.py - 请求网址 %s' % common.WEB_SITE + common.URL_PARAM)
     bingPicUrl = bing2me.getPicUrl(common.WEB_SITE + common.URL_PARAM)
@@ -107,6 +107,6 @@ def save_ico(name):
 
 
 def get_icons():
-    mkdir(common.ICONS_DIR)
+    makedirs(common.ICONS_DIR)
     save_ico(common.PANDA_ICO)
     save_ico(common.CHECK_MARK_ICO)
