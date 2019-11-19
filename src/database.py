@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
 import sqlite3
+import common
 
 
 def connect():
-    conn = sqlite3.connect('bing2me.db')
+    conn = sqlite3.connect(common.DATABASE_PATH)
     print(u"INFO: database.py - 打开数据库连接")
     return conn
 

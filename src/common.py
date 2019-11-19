@@ -4,13 +4,19 @@ import os
 WEB_SITE = 'https://cn.bing.com'
 URL_PARAM = "/?scope=web&FORM=HDRSC1"
 CONTENT_STR = "data-ultra-definition-src=\""
-# 本地保存壁纸目录
-BING_PIC_DIR = os.path.abspath('.') + "/bing-pic/"
-ICONS_DIR = os.path.abspath('.') + "/icons/"
 
+APP_NAME = "bing2me"
+# 本地保存壁纸目录
+USER_PATH = os.path.expanduser('~')
+APP_PATH = USER_PATH + "/.%s" % APP_NAME
+BING_PIC_DIR = APP_PATH + "/bing-pic/"
+ICONS_DIR = APP_PATH + "/icons/"
+
+# database path
+DATABASE_PATH = APP_PATH + '/%s.db' % APP_NAME
 
 # ### icon图片 ### #
-STATIC_NCWTF_COM = "https://raw.githubusercontent.com/ncwtf/bing2me/master/src/icons/"
+STATIC_NCWTF_COM = "https://raw.githubusercontent.com/ncwtf/bing2me/master/icons/"
 
 CHECK_MARK_ICO = "checkmark.ico"
 PANDA_ICO = "panda.ico"
