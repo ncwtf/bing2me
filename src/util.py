@@ -10,9 +10,11 @@ from io import BytesIO
 import win32gui
 import win32con
 import win32api
-import database
+import database as db
 import common
 import bing2me
+import psutil
+import sys
 
 
 def makedirs(dir_path):
@@ -55,8 +57,8 @@ def savePic(pic_url):
         image = Image.open(BytesIO(r.content))
         image.save(pic_path)
         md5_str = filemd5(pic_path)
-        if database.selectCountByMd5(md5_str) < 1:
-            database.insert(filename, pic_path, md5_str)
+        if db.Pic().selectCountByMd5(md5_str) < 1:
+            db.Pic().insert(filename, pic_path, md5_str)
             return pic_path
         else:
             os.remove(pic_path)
@@ -73,10 +75,6 @@ def savePicAndSetWallpaper(pic_url):
 
 
 def change_wallpaper():
-    # init
-    print(u'INFO: main.py - 初始化数据库、图片文件夹')
-    database.init()
-    makedirs(common.BING_PIC_DIR)
     # request web site
     print(u'INFO: main.py - 请求网址 %s' % common.WEB_SITE + common.URL_PARAM)
     bingPicUrl = bing2me.getPicUrl(common.WEB_SITE + common.URL_PARAM)
@@ -103,10 +101,26 @@ def save_ico(name):
     else:
         image = Image.open(BytesIO(r.content))
         image.save(ico_path)
-        print(u"ICO保存成功，%s" % ico_path)
+        print(u"INFO: util.py - ICO保存成功，%s" % ico_path)
 
 
 def get_icons():
     makedirs(common.ICONS_DIR)
     save_ico(common.PANDA_ICO)
     save_ico(common.CHECK_MARK_ICO)
+
+
+def suicider():
+    db_pid = db.Pid().get()
+    print(u"INFO: util.py.suiclder() - db_pid: %s" % db_pid)
+    if db_pid is not None and psutil.pid_exists(db_pid):
+        p = psutil.Process(db_pid)
+        if p.name() == 'bing2me.exe':
+            print(u"INFO: util.py.suiclder() - suicider")
+            sys.exit()
+    else:
+        for pid in psutil.pids():
+            p = psutil.Process(pid)
+            if p.name() == 'bing2me.exe':
+                db.Pid().put(pid)
+                print(u"INFO: util.py.suiclder() - update")

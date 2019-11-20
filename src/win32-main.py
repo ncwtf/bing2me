@@ -8,6 +8,7 @@ import os
 from tkinter import messagebox as mb
 import util
 import common
+import database as db
 
 Main = None
 
@@ -258,10 +259,15 @@ class BootUp:
 
 class _Main:
     def __init__(self):
+        # init
+        print(u'INFO: main.py - 初始化数据库、图片文件夹')
+        db.init()
+        util.makedirs(common.BING_PIC_DIR)
         util.get_icons()
+        # 检查是否多开
+        util.suicider()
         # TODO 更换壁纸
         # util.change_wallpaper()
-        pass
 
     def main(self):
         import tkinter as tk
