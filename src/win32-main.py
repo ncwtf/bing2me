@@ -1,3 +1,5 @@
+import sys
+
 import win32api
 import win32con
 import win32gui_struct
@@ -199,13 +201,16 @@ class SysTrayIcon(object):
         if menu_action == self.QUIT:
             win32gui.DestroyWindow(self.hwnd)
         elif menu_action == self.BOOTUP:
-            # todo 设置开机自启逻辑
-            # TODO 获取当前开机自启状态
-            bootup_status = True
-            mb.askquestion(
+            # 设置开机自启逻辑
+            boot_up = BootUp()
+            # 获取当前开机自启状态
+            boot_up_status = boot_up.status()
+            mb_input = mb.askquestion(
                 "设置开机启动",
-                "当前 [%s] 开机启动, 是否变更状态?" % "已设置" if bootup_status else "未设置",
+                "当前 [%s] 开机启动, 是否变更状态?" % ("已设置" if boot_up_status else "未设置"),
             )
+            if mb_input == "yes":
+                boot_up.close() if boot_up_status else boot_up.open()
         elif menu_action == self.CHANGE_WALLPAPER:
             # 更换壁纸
             util.change_wallpaper()
@@ -214,10 +219,47 @@ class SysTrayIcon(object):
             mb.showerror("error", "no action")
 
 
+class BootUp:
+    app_name = common.APP_NAME
+    app_path = sys.argv[0]
+    # 注册表项名
+    key_name = r'Software\Microsoft\Windows\CurrentVersion\Run'
+
+    def status(self):
+        try:
+            key = win32api.RegOpenKey(win32con.HKEY_CURRENT_USER, self.key_name, 0, win32con.KEY_ALL_ACCESS)
+            win32api.RegQueryValueEx(key, self.app_name)
+            win32api.RegCloseKey(key)
+            print(u'INFO: win32-main.py - 已设置开机自启')
+            return True
+        except:
+            print(u'INFO: win32-main.py - 未设置开机自启')
+            return False
+
+    def open(self):
+        # 异常处理
+        try:
+            print(u'INFO: win32-main.py - 设置开机自启...')
+            key = win32api.RegOpenKey(win32con.HKEY_CURRENT_USER, self.key_name, 0, win32con.KEY_ALL_ACCESS)
+            win32api.RegSetValueEx(key, self.app_name, 0, win32con.REG_SZ, self.app_path)
+            win32api.RegCloseKey(key)
+        except:
+            print(u'ERROR: win32-main.py - 设置开机自启失败')
+
+    def close(self):
+        try:
+            print(u'INFO: win32-main.py - 关闭开机自启...')
+            key = win32api.RegOpenKey(win32con.HKEY_CURRENT_USER, self.key_name, 0, win32con.KEY_ALL_ACCESS)
+            win32api.RegDeleteValue(key, self.app_name)
+            win32api.RegCloseKey(key)
+        except:
+            print(u'ERROR: win32-main.py - 关闭开机自启失败')
+
+
 class _Main:
     def __init__(self):
         util.get_icons()
-        # 更换壁纸 TODO
+        # TODO 更换壁纸
         # util.change_wallpaper()
         pass
 
