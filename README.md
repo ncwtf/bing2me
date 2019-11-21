@@ -34,4 +34,5 @@
 > 问题记录
 * 打包exe时需指定ssl的目录到环境变量
   * /python-path/DLLs
-* sudo pyinstaller --icon=./icons/panda.ico .\src\bing2me.py
+* pyinstaller -w -i=icons/panda.ico src/bing2me.py
+* pyinstaller -w -F -i=icons/panda.ico src/bing2me.py
