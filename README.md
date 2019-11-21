@@ -18,6 +18,7 @@
 │  │  main.py
 │  │  util.py
 │  │  bing2me.py
+|  |  log.py
 └─test
       request.py
 ```
