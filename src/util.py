@@ -10,15 +10,17 @@ from io import BytesIO
 import win32gui
 import win32con
 import win32api
-import database
+import database as db
 import common
-import bing2me
+import bing_request as br
+import psutil
+import sys
 
 
-def mkdir(dir_path):
+def makedirs(dir_path):
     if not os.path.exists(dir_path):
         print(u"INFO: util.py - mkdir %s" % (dir_path))
-        os.mkdir(dir_path)
+        os.makedirs(dir_path)
 
 
 def md5(contents):
@@ -55,8 +57,8 @@ def savePic(pic_url):
         image = Image.open(BytesIO(r.content))
         image.save(pic_path)
         md5_str = filemd5(pic_path)
-        if database.selectCountByMd5(md5_str) < 1:
-            database.insert(filename, pic_path, md5_str)
+        if db.Pic().selectCountByMd5(md5_str) < 1:
+            db.Pic().insert(filename, pic_path, md5_str)
             return pic_path
         else:
             os.remove(pic_path)
@@ -73,13 +75,9 @@ def savePicAndSetWallpaper(pic_url):
 
 
 def change_wallpaper():
-    # init
-    print(u'INFO: main.py - 初始化数据库、图片文件夹')
-    database.init()
-    mkdir(common.BING_PIC_DIR)
     # request web site
     print(u'INFO: main.py - 请求网址 %s' % common.WEB_SITE + common.URL_PARAM)
-    bingPicUrl = bing2me.getPicUrl(common.WEB_SITE + common.URL_PARAM)
+    bingPicUrl = br.getPicUrl(common.WEB_SITE + common.URL_PARAM)
     print(u"INFO: 图片URL: %s" % bingPicUrl)
     if bingPicUrl is None:
         print(u'ERROR: main.py - 图片url为None，更换壁纸失败')
@@ -98,15 +96,31 @@ def save_ico(name):
     # 如果文件不存在重新获取
     r = requests.get(common.STATIC_NCWTF_COM + name)
     if not r.ok:
-        print(u"ERROR: util.py - 请求icon错误, 错误码: %d" % r.status_code)
+        print(u"ERROR: util.py - 请求icon错误: %s, 错误码: %d" % (common.STATIC_NCWTF_COM + name, r.status_code))
         return False
     else:
         image = Image.open(BytesIO(r.content))
         image.save(ico_path)
-        print(u"ICO保存成功，%s" % ico_path)
+        print(u"INFO: util.py - ICO保存成功，%s" % ico_path)
 
 
 def get_icons():
-    mkdir(common.ICONS_DIR)
+    makedirs(common.ICONS_DIR)
     save_ico(common.PANDA_ICO)
     save_ico(common.CHECK_MARK_ICO)
+
+
+def suicider():
+    db_pid = db.Pid().get()
+    print(u"INFO: util.py.suiclder() - db_pid: %s, file_name: %s" % (db_pid, common.FILE_NAME))
+    if db_pid is not None and psutil.pid_exists(db_pid):
+        p = psutil.Process(db_pid)
+        if p.name() == common.FILE_NAME:
+            print(u"INFO: util.py.suiclder() - suicider")
+            sys.exit()
+    else:
+        for pid in psutil.pids():
+            p = psutil.Process(pid)
+            if p.name() == common.FILE_NAME:
+                db.Pid().put(pid)
+                print(u"INFO: util.py.suiclder() - update")
