@@ -1,5 +1,3 @@
-import sys
-
 import win32api
 import win32con
 import win32gui_struct
@@ -9,6 +7,7 @@ from tkinter import messagebox as mb
 import util
 import common
 import database as db
+import job
 
 Main = None
 
@@ -222,7 +221,7 @@ class SysTrayIcon(object):
 
 class BootUp:
     app_name = common.APP_NAME
-    app_path = sys.argv[0]
+    app_path = common.SYS_ARGV
     # 注册表项名
     key_name = r'Software\Microsoft\Windows\CurrentVersion\Run'
 
@@ -268,6 +267,7 @@ class _Main:
         util.suicider()
         # TODO 更换壁纸
         # util.change_wallpaper()
+        job.Timing(1, "Thread-1", 1).start()
 
     def main(self):
         import tkinter as tk

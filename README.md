@@ -12,7 +12,7 @@
 ├─bing-pic
 ├─icons
 ├─src
-│  │  bing-request.py
+│  │  bing_request.py
 │  │  common.py
 │  │  database.py
 │  │  main.py

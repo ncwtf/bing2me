@@ -12,7 +12,7 @@ import win32con
 import win32api
 import database as db
 import common
-import bing2me
+import bing_request as br
 import psutil
 import sys
 
@@ -77,7 +77,7 @@ def savePicAndSetWallpaper(pic_url):
 def change_wallpaper():
     # request web site
     print(u'INFO: main.py - 请求网址 %s' % common.WEB_SITE + common.URL_PARAM)
-    bingPicUrl = bing2me.getPicUrl(common.WEB_SITE + common.URL_PARAM)
+    bingPicUrl = br.getPicUrl(common.WEB_SITE + common.URL_PARAM)
     print(u"INFO: 图片URL: %s" % bingPicUrl)
     if bingPicUrl is None:
         print(u'ERROR: main.py - 图片url为None，更换壁纸失败')
@@ -112,15 +112,15 @@ def get_icons():
 
 def suicider():
     db_pid = db.Pid().get()
-    print(u"INFO: util.py.suiclder() - db_pid: %s" % db_pid)
+    print(u"INFO: util.py.suiclder() - db_pid: %s, file_name: %s" % (db_pid, common.FILE_NAME))
     if db_pid is not None and psutil.pid_exists(db_pid):
         p = psutil.Process(db_pid)
-        if p.name() == 'bing2me.exe':
+        if p.name() == common.FILE_NAME:
             print(u"INFO: util.py.suiclder() - suicider")
             sys.exit()
     else:
         for pid in psutil.pids():
             p = psutil.Process(pid)
-            if p.name() == 'bing2me.exe':
+            if p.name() == common.FILE_NAME:
                 db.Pid().put(pid)
                 print(u"INFO: util.py.suiclder() - update")

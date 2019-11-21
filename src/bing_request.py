@@ -7,12 +7,12 @@ import common
 def getPicUrl(url):
     r = requests.get(url)
     if not r.ok:
-        print(u"ERROR: bing-request.py - 请求网址 %s 错误, 错误码: %d" % (url, r.status_code))
+        print(u"ERROR: bing_request.py - 请求网址 %s 错误, 错误码: %d" % (url, r.status_code))
     else:
         bing_content = str(r.content)
         index_of = bing_content.find(common.CONTENT_STR)
         if index_of == -1:
-            print(u"ERROR: bing-request.py - 未找到图片url")
+            print(u"ERROR: bing_request.py - 未找到图片url")
         else:
             index_of += len(common.CONTENT_STR)
             pic_url = bing_content[index_of:]
