@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 
 # 获取壁纸网站
 WEB_SITE = 'https://cn.bing.com'
@@ -31,3 +32,12 @@ PANDA_ICO_PATH = ICONS_DIR + PANDA_ICO
 # job config
 JOB_HOUR = "09"
 JOB_MINUTE = "00"
+
+# log config
+LOG_DIR = APP_RESOURCE_PATH + "/logs/"
+LOG_FILENAME = LOG_DIR + APP_NAME + ".log"
+LOG_LEVEL = logging.INFO
+LOG_WHEN = 'D'
+LOG_BACK_COUNT = 3
+LOG_ENCODING = 'utf-8'
+LOG_FMT = '%(asctime)s - %(module)s.%(funcName)s [line:%(lineno)d] - %(levelname)s: %(message)s'

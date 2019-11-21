@@ -15,11 +15,14 @@ import common
 import bing_request as br
 import psutil
 import sys
+import log
+
+logger = log.LOGGER
 
 
 def makedirs(dir_path):
     if not os.path.exists(dir_path):
-        print(u"INFO: util.py - mkdir %s" % (dir_path))
+        logger.info(u"mkdir %s" % (dir_path))
         os.makedirs(dir_path)
 
 
@@ -51,7 +54,7 @@ def savePic(pic_url):
     filename = str(time.time()) + ".jpg"
     pic_path = common.BING_PIC_DIR + filename
     if not r.ok:
-        print(u"ERROR: util.py - 请求图片地址: %s 错误, 错误码: %d" % (pic_url, r.status_code))
+        logger.error(u"请求图片地址: %s 错误, 错误码: %d" % (pic_url, r.status_code))
         return False
     else:
         image = Image.open(BytesIO(r.content))
@@ -62,31 +65,31 @@ def savePic(pic_url):
             return pic_path
         else:
             os.remove(pic_path)
-            print(u"INFO: util.py - md5 已存在. 删除图片文件.")
+            logger.info(u"md5 已存在. 删除图片文件.")
             return False
 
 
 def savePicAndSetWallpaper(pic_url):
     pic_path = savePic(pic_url)
     if not pic_path:
-        print(u"INFO: util.py - 壁纸没有更换.")
+        logger.info(u"壁纸没有更换.")
     else:
         setWallpaper(pic_path)
 
 
 def change_wallpaper():
     # request web site
-    print(u'INFO: main.py - 请求网址 %s' % common.WEB_SITE + common.URL_PARAM)
+    logger.info(u'请求网址 %s' % common.WEB_SITE + common.URL_PARAM)
     bingPicUrl = br.getPicUrl(common.WEB_SITE + common.URL_PARAM)
-    print(u"INFO: 图片URL: %s" % bingPicUrl)
+    logger.info(u"图片URL: %s" % bingPicUrl)
     if bingPicUrl is None:
-        print(u'ERROR: main.py - 图片url为None，更换壁纸失败')
+        logger.error(u'图片url为None，更换壁纸失败')
     else:
         # save picture to disk and setup wallpaper
-        print(u'INFO: main.py - 保存图片，路径 -> %s' % common.BING_PIC_DIR)
-        print(u'INFO: main.py - 设置壁纸...')
+        logger.info(u'保存图片，路径 -> %s' % common.BING_PIC_DIR)
+        logger.info(u'设置壁纸...')
         savePicAndSetWallpaper(bingPicUrl)
-        print(u'INFO: main.py - done')
+        logger.info(u'done')
 
 
 def save_ico(name):
@@ -96,12 +99,12 @@ def save_ico(name):
     # 如果文件不存在重新获取
     r = requests.get(common.STATIC_NCWTF_COM + name)
     if not r.ok:
-        print(u"ERROR: util.py - 请求icon错误: %s, 错误码: %d" % (common.STATIC_NCWTF_COM + name, r.status_code))
+        logger.error(u"请求icon错误: %s, 错误码: %d" % (common.STATIC_NCWTF_COM + name, r.status_code))
         return False
     else:
         image = Image.open(BytesIO(r.content))
         image.save(ico_path)
-        print(u"INFO: util.py - ICO保存成功，%s" % ico_path)
+        logger.info(u"ICO保存成功，%s" % ico_path)
 
 
 def get_icons():
@@ -112,15 +115,15 @@ def get_icons():
 
 def suicider():
     db_pid = db.Pid().get()
-    print(u"INFO: util.py.suiclder() - db_pid: %s, file_name: %s" % (db_pid, common.FILE_NAME))
+    logger.info(u"db_pid: %s, file_name: %s" % (db_pid, common.FILE_NAME))
     if db_pid is not None and psutil.pid_exists(db_pid):
         p = psutil.Process(db_pid)
         if p.name() == common.FILE_NAME:
-            print(u"INFO: util.py.suiclder() - suicider")
+            logger.info(u"suicider")
             sys.exit()
     else:
         for pid in psutil.pids():
             p = psutil.Process(pid)
             if p.name() == common.FILE_NAME:
                 db.Pid().put(pid)
-                print(u"INFO: util.py.suiclder() - update")
+                logger.info(u"update")
