@@ -8,8 +8,10 @@ import util
 import common
 import database as db
 import job
+import log
 
 Main = None
+logger = log.LOGGER
 
 
 class SysTrayIcon(object):
@@ -30,7 +32,7 @@ class SysTrayIcon(object):
         self.hover_text = hover_text
         self.on_quit = on_quit
 
-        print(common.CHECK_MARK_ICO_PATH)
+        logger.info(common.CHECK_MARK_ICO_PATH)
         menu_options += (
             ('开机启动', common.CHECK_MARK_ICO_PATH, self.BOOTUP),
             ('更换壁纸', None, self.CHANGE_WALLPAPER),
@@ -230,36 +232,36 @@ class BootUp:
             key = win32api.RegOpenKey(win32con.HKEY_CURRENT_USER, self.key_name, 0, win32con.KEY_ALL_ACCESS)
             win32api.RegQueryValueEx(key, self.app_name)
             win32api.RegCloseKey(key)
-            print(u'INFO: bing2me.py - 已设置开机自启')
+            logger.info(u'已设置开机自启')
             return True
         except:
-            print(u'INFO: bing2me.py - 未设置开机自启')
+            logger.info(u'未设置开机自启')
             return False
 
     def open(self):
         # 异常处理
         try:
-            print(u'INFO: bing2me.py - 设置开机自启...')
+            logger.info(u'设置开机自启...')
             key = win32api.RegOpenKey(win32con.HKEY_CURRENT_USER, self.key_name, 0, win32con.KEY_ALL_ACCESS)
             win32api.RegSetValueEx(key, self.app_name, 0, win32con.REG_SZ, self.app_path)
             win32api.RegCloseKey(key)
         except:
-            print(u'ERROR: bing2me.py - 设置开机自启失败')
+            logger.warn(u'设置开机自启失败')
 
     def close(self):
         try:
-            print(u'INFO: bing2me.py - 关闭开机自启...')
+            logger.info(u'关闭开机自启...')
             key = win32api.RegOpenKey(win32con.HKEY_CURRENT_USER, self.key_name, 0, win32con.KEY_ALL_ACCESS)
             win32api.RegDeleteValue(key, self.app_name)
             win32api.RegCloseKey(key)
         except:
-            print(u'ERROR: bing2me.py - 关闭开机自启失败')
+            logger.warn(u'关闭开机自启失败')
 
 
 class _Main:
     def __init__(self):
         # init
-        print(u'INFO: main.py - 初始化数据库、图片文件夹')
+        logger.info(u'初始化数据库、图片文件夹')
         db.init()
         util.makedirs(common.BING_PIC_DIR)
         util.get_icons()
@@ -273,7 +275,7 @@ class _Main:
         import tkinter as tk
 
         self.root = tk.Tk()
-        print(common.PANDA_ICO_PATH)
+        logger.info(common.PANDA_ICO_PATH)
         hover_text = "bing2me\n每天自动更新壁纸\n(#^.^#)"  # 悬浮于图标上方时的提示
         menu_options = ()
         self.sysTrayIcon = SysTrayIcon(
@@ -296,9 +298,10 @@ class _Main:
 
     def exit(self, _sysTrayIcon=None):
         self.root.destroy()
-        print('exit...')
+        logger.info('exit...')
 
 
 if __name__ == '__main__':
+    log.LOG.logo()
     Main = _Main()
     Main.main()
