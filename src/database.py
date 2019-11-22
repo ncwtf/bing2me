@@ -2,11 +2,14 @@
 
 import sqlite3
 import common
+import log
+
+logger = log.LOGGER
 
 
 def connect():
     conn = sqlite3.connect(common.DATABASE_PATH)
-    print(u"INFO: database.py - 打开数据库连接")
+    logger.info(u"打开数据库连接")
     return conn
 
 
@@ -16,9 +19,9 @@ def create_table(sql):
     try:
         c.execute(sql)
     except:
-        print(u"INFO: database.py - 表创建失败，或已存在")
+        logger.info(u"表创建失败，或已存在")
         return False
-    print(u"INFO: database.py - 表创建完成")
+    logger.info(u"表创建完成")
     conn.commit()
     conn.close()
 
@@ -50,7 +53,7 @@ class Pic:
         c = conn.cursor()
         sql = "INSERT INTO pic (id, filename, path, md5) VALUES (%d, '%s', '%s', '%s')"
         values = (self.nextId(), filename, path, md5)
-        print(u"INFO: database.py - [%s]" % (sql % values))
+        logger.info(u"[%s]" % (sql % values))
         c.execute(sql % values)
         conn.commit()
         conn.close()
@@ -94,7 +97,7 @@ class Pid:
             sql = "INSERT INTO pid (id, pid) VALUES (1, '%s')"
         else:
             sql = "UPDATE pid SET pid = '%s' WHERE id = 1 "
-        print(u"INFO: database.py - [%s]\n params[%s]" % (sql, p_id))
+        logger.info(u"[%s]\n params[%s]" % (sql, p_id))
         c.execute(sql % p_id)
         conn.commit()
         conn.close()
