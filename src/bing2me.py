@@ -267,8 +267,8 @@ class _Main:
         util.get_icons()
         # 检查是否多开
         util.suicider()
-        # TODO 更换壁纸
-        # util.change_wallpaper()
+        # 更换壁纸
+        util.change_wallpaper()
         job.Timing(1, "Thread-1", 1).start()
 
     def main(self):
