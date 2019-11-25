@@ -97,7 +97,7 @@ class Pid:
             sql = "INSERT INTO pid (id, pid) VALUES (1, '%s')"
         else:
             sql = "UPDATE pid SET pid = '%s' WHERE id = 1 "
-        logger.info(u"[%s]\n params[%s]" % (sql, p_id))
+        logger.info(u"[%s] params[%s]" % (sql, p_id))
         c.execute(sql % p_id)
         conn.commit()
         conn.close()
