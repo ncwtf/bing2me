@@ -3,6 +3,7 @@
 * Python3.7, sqlite
 * 采集必应首页图片，设置为桌面壁纸
 * 待完成列表 [TODO.md](https://github.com/ncwtf/bing2me/blob/master/TODO.md)
+* 资源目录；$USER/.bing2me/
 
 > 目录结构
 ```

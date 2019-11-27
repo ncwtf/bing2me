@@ -15,11 +15,14 @@ class Timing(threading.Thread):
         self.threadID = threadID
         self.name = name
         self.counter = counter
+        # 设置守护进程
+        # 父进程结束时，所有的子进程跟着全部结束
+        self.daemon = 1
 
     def run(self):
         # BlockingScheduler
         scheduler = BlockingScheduler()
-        trigger = CronTrigger(hour=common.JOB_HOUR, minute=common.JOB_MINUTE)
+        trigger = CronTrigger(day="*", hour=common.JOB_HOUR, minute=common.JOB_MINUTE)
         scheduler.add_job(util.change_wallpaper, trigger)
         logger.info(u'定时任务已启动[%s时, %s分]' % (common.JOB_HOUR, common.JOB_MINUTE))
         scheduler.start()
