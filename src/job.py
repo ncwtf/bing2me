@@ -15,6 +15,9 @@ class Timing(threading.Thread):
         self.threadID = threadID
         self.name = name
         self.counter = counter
+        # 设置守护进程
+        # 父进程结束时，所有的子进程跟着全部结束
+        self.daemon = 1
 
     def run(self):
         # BlockingScheduler
