@@ -38,8 +38,9 @@
   
 > 打包命令 (文件生成在 根目录dist文件夹)
 * 1.安装zip命令 
+* (╯‵□′)╯︵┻━┻ 这里不应该用这个命令
 * 2.subst z: "C:\Program Files (x86)\GnuWin32\bin" # zip目录 
 * 3.执行 deploy.bat
 - 或者
-* pyinstaller -w -i=icons/panda.ico src/bing2me.py
-* pyinstaller -w -F -i=icons/panda.ico src/bing2me.py
+* pyinstaller -y -w -i=icons/panda.ico src/bing2me.py
+* pyinstaller -y -w -F -i=icons/panda.ico src/bing2me.py
