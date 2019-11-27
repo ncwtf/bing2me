@@ -19,7 +19,7 @@ class Timing(threading.Thread):
     def run(self):
         # BlockingScheduler
         scheduler = BlockingScheduler()
-        trigger = CronTrigger(hour=common.JOB_HOUR, minute=common.JOB_MINUTE)
+        trigger = CronTrigger(day="*", hour=common.JOB_HOUR, minute=common.JOB_MINUTE)
         scheduler.add_job(util.change_wallpaper, trigger)
         logger.info(u'定时任务已启动[%s时, %s分]' % (common.JOB_HOUR, common.JOB_MINUTE))
         scheduler.start()
